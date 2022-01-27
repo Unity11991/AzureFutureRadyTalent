@@ -1,0 +1,104 @@
+<!doctype html>
+	<head>
+		<style>
+			/* CSS comes here */
+			body {
+			    font-family: arial;
+                background-color: #424241;
+			}
+			button {
+			    padding:10px;
+			    background-color:#6a67ce;
+			    color: #FFFFFF;
+			    border: 0px;
+			    cursor:pointer;
+			    border-radius: 5px;
+			}
+			#output {
+			    background-color: #424241;
+			    padding:10px;
+			    width: 100%;
+			    margin-top: 20px;
+			    line-height:30px;
+			}
+			.hide {
+			    display:none;
+			}
+			.show {
+			    display:block;
+			}
+            #h1{
+                font-size: xxx-large;
+                text-align: center;
+                font-family: "Rockwell Extra Bold";
+                color: #FFFFFF;
+            }
+            #p1{
+                font-size: large;
+                text-align: center;
+                font-family: "Rockwell Extra Bold";
+                color: cyan;
+            }
+            .b1{
+                text-align: center;
+                position: relative;
+                top: 100px;
+            }
+            .b2{
+                text-align: center;
+                font-size: 50px;
+            }
+            .b3{
+                position: relative;
+                bottom: 50px;
+            }
+		</style>
+		<title>JavaScript Speech to Text</title>
+	</head>
+	<body>
+		<h2 id="h1">AZURE Assistant</h2>
+        <p class="b1"><button type="button" onclick="runSpeechRecognition()" class="b2">Start</button> &nbsp; <span id="action"></span></p>
+        <div id="output" class="hide"></div>
+        <form action="/menu" method="GET">
+            <input type="text" id="mytext" name="x">
+            <input type="submit">
+        </form>
+        here we have output <pre>{{ myname }}</pre>
+		<script>
+			/* JS comes here */
+		    function runSpeechRecognition() {
+		        // get output div reference
+		        var output = document.getElementById("output");
+		        // get action element reference
+		        var action = document.getElementById("action");
+                // new speech recognition object
+                var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
+                var recognition = new SpeechRecognition();
+
+                // This runs when the speech recognition service starts
+                recognition.onstart = function() {
+                    action.innerHTML = "<small>listening, please speak...</small>";
+                };
+
+                recognition.onspeechend = function() {
+                    action.innerHTML = "<small>stopped listening, hope you are done...</small>";
+                    recognition.stop();
+                }
+
+                // This runs when the speech recognition service returns result
+                recognition.onresult = function(event) {
+                    var transcript = event.results[0][0].transcript;
+                    var confidence = event.results[0][0].confidence;
+                    output.innerHTML = "<b>Text:</b> " + transcript + "<br/> <b>Confidence:</b> " + confidence*100+"%";
+                    output.classList.remove("hide");
+                    document.getElementById("mytext").value = transcript;
+                    
+
+                };
+
+                 // start recognition
+                 recognition.start();
+	        }
+		</script>
+	</body>
+</html>
